@@ -193,7 +193,7 @@ void selectionSort(int(&arr)[N]) {
     for (int i = 0; i < N - 1; ++i) {
         int minIndex = i;
         for (int j = i; j < N; ++j) {
-            if (arr[j] < arr[minIndex]) {
+            if (arr[minIndex] > arr[j]) {
                 minIndex = j;
             }
         }
@@ -213,7 +213,6 @@ void insertionSort(int(&arr)[N]) {
             arr[j + 1] = arr[j];
             --j;
         }
-
         arr[j + 1] = key;
     }
 }
@@ -227,10 +226,7 @@ void shellSort(int(&arr)[N]) {
             for (j = i; j >= gap && arr[j - gap] > key; j -= gap) {
                 arr[j] = arr[j - gap];
             }
-
-            if (j != i) {
-                arr[j] = key;
-            }
+            arr[j] = key;
         }
     }
 }
@@ -249,44 +245,37 @@ void quickSort(int(&arr)[N], int left, int right) {
                 --cRight;
             }
             if (cLeft > cRight) {
-                break;
+				break;
             }
             swap(arr[cLeft], arr[cRight]);
         }
-
         swap(arr[left], arr[cRight]);
-		quickSort(arr, left, cRight - 1);
-		quickSort(arr, cRight + 1, right);
+        quickSort(arr, left, cRight - 1);
+        quickSort(arr, cRight + 1, right);
     }
 }
 
 template <size_t N>
 void radixSort(int(&arr)[N]) {
     int maxVal = arr[0];
-
     for (int i = 1; i < N; ++i) {
         if (maxVal < arr[i]) {
             maxVal = arr[i];
         }
     }
-
     for (int exp = 1; maxVal / exp > 0; exp *= 10) {
         int result[N];
         int count[10]{};
-
         for (int i = 0; i < N; ++i) {
             ++count[(arr[i] / exp) % 10];
         }
-
         for (int i = 1; i < 10; ++i) {
             count[i] += count[i - 1];
         }
-
         for (int i = N - 1; i >= 0; --i) {
             result[count[(arr[i] / exp) % 10] - 1] = arr[i];
             --count[(arr[i] / exp) % 10];
         }
-
         for (int i = 0; i < N; ++i) {
             arr[i] = result[i];
         }
@@ -299,37 +288,33 @@ void mergeSort(int(&arr)[N], int left, int right) {
         int mid = left + (right - left) / 2;
         mergeSort(arr, left, mid);
         mergeSort(arr, mid + 1, right);
-
         int leftSize = mid - left + 1;
         int rightSize = right - mid;
         int* leftArr = new int[leftSize];
         int* rightArr = new int[rightSize];
-
         for (int i = 0; i < leftSize; ++i) {
             leftArr[i] = arr[left + i];
         }
         for (int i = 0; i < rightSize; ++i) {
-            rightArr[i] = arr[mid + i + 1];
+            rightArr[i] = arr[mid + 1 + i];
         }
-
         int i = 0, j = 0, k = left;
         while (i < leftSize && j < rightSize) {
-            if (leftArr[i] <= rightArr[j]) {
+            if (leftArr[i] < rightArr[j]) {
                 arr[k] = leftArr[i];
                 ++i;
-            } else {
+            }
+            else {
                 arr[k] = rightArr[j];
                 ++j;
             }
             ++k;
         }
-
         while (i < leftSize) {
             arr[k] = leftArr[i];
             ++i;
             ++k;
         }
-
         while (j < rightSize) {
             arr[k] = rightArr[j];
             ++j;
@@ -386,7 +371,7 @@ int main() {
    }
    cout << endl;
 
-   int arr6[10] = { 12, 5, 38, 276, 86, 5566, 64, 823, 62, 21 };
+   int arr6[10] = { 12, 5, 88, 276, 86, 6666, 64, 823, 62, 21 };
    cout << "After radix sorting: ";
    radixSort(arr6);
    for (int i = 0; i < 10; ++i) {
@@ -394,7 +379,7 @@ int main() {
    }
    cout << endl;
 
-   int arr7[10] = { 12, 5, 38, 276, 86, 5566, 64, 823, 62, 21 };
+   int arr7[10] = { 12, 5, 38, 276, 66666, 9999, 64, 888, 62, 21 };
    cout << "After merge sorting: ";
    mergeSort(arr7, 0, 9);
    for (int i = 0; i < 10; ++i) {
